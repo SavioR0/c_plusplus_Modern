@@ -4,6 +4,16 @@
 
 #define MAX 10
 
+enum TypePrint{
+    Insert_push_front,
+    Insert_push_back ,
+    Insert_index,
+    Pop_front,
+    Pop_back,
+    Pop_index,
+    Position,
+};
+
 template<typename T>
 class No{
     public:
@@ -28,9 +38,10 @@ public:
     void pop_index(int index);
 
     bool search(T value);
+    T position(int index);
     std::string contains(T value);
 
-    void print();
+    void print(TypePrint type);
 
 
 };
@@ -80,7 +91,7 @@ void List<T>::insert_index(int index, T value){
 template<typename T>
 void List<T>::pop_back(){
     try{
-        if(size = 0) throw std::invalid_argument("[ERRO] A lista está vazia, não é possível remover elemento.")
+        if(size == 0) throw std::invalid_argument("[ERRO] A lista está vazia, não é possível remover elemento.");
         No<T> *pointer = node;
         while (pointer->next->next != nullptr) pointer = pointer->next;
         pointer->next = nullptr;
@@ -93,9 +104,10 @@ void List<T>::pop_back(){
 template<typename T>
 void List<T>::pop_front(){
     try{
-        if(size = 0) throw std::invalid_argument("[ERRO] A lista está vazia, não é possível remover elemento.")
+        if(size == 0) throw std::invalid_argument("[ERRO] A lista está vazia, não é possível remover elemento.");
         node = node->next;
         size--;
+
     }catch(const std::exception& e){
         std::cerr << e.what() << '\n';
     }
@@ -139,11 +151,41 @@ std::string List<T>::contains(T value){
     return search(value) ? "Valor encontrado!" : "Valor não está presente na lista";
 }
 
+
+template<typename T>
+T List<T>::position(int index){
+    No<T> *pointer = node;
+    for(int i =0; i<index; i++) pointer=pointer->next;
+    return pointer->num;
+}
+
+
+std::string switchTypePrint(TypePrint type){
+    switch (type){
+        case Insert_push_front:
+            return "Isert_push_front";
+        case Insert_push_back:
+            return "Insert_push_back";
+        case Insert_index:
+            return "Insert_index    ";
+        case Pop_front:
+            return "Pop_front       ";
+        case Pop_back:
+            return "Pop_back        ";
+        case Pop_index:
+            return "Pop_index       ";
+        case Position:
+            return "Position        ";
+        default:
+            return "ERRO";
+    };
+}
+
 // Impressão
 template<typename T>
-void List<T>::print(){
+void List<T>::print(TypePrint type){
     No<T> *pointer = node;
-    std::cout<<"Size : "<<size<<"\t [ ";
+    std::cout<<switchTypePrint(type)<< "\t->  " <<"Size : "<<size<<"\t [ ";
     while (pointer!= NULL){
         std::cout<<pointer->num<< " ";
         pointer = pointer->next;
