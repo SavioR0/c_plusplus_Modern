@@ -11,3 +11,5 @@ A seguir têm-se a explicação detalhada do que é aboradado em cada atividade 
     - São feitas atividades utilizando o template, o que demonstra a imporatncia da generalização de funções de classes.
  - Signals
     - É reaizada uma atividade de sinais que exemplifica a utilização de sinais quando um programa está em tempo de execução.
+- Strings
+    - É reaizada uma atividade aplicando a criação de string literais criadas pelo usuário.

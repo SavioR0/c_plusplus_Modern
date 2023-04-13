@@ -28,3 +28,5 @@ Nesse sentido, foram testados as seguintes url exemplos:
 - https://www.cefetmg.br:443/
 - https://pt.wikipedia.org/wiki/URL
 - https://pt.wikipedia.org/wiki/URL#cite_note-4
+
+É implementado o uso do literal com sufixo _url e o objeto URL está sendo construído corretamente a partir do literal.
