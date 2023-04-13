@@ -39,6 +39,7 @@
         "numeric": "cpp",
         "sstream": "cpp",
         "tuple": "cpp",
-        "csignal": "cpp"
+        "csignal": "cpp",
+        "map": "cpp"
     }
 }
