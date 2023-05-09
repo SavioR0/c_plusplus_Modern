@@ -54,9 +54,7 @@ class BigInt{
 
         BigInt operator-(const BigInt& o){
             BigInt* aux_BigInt = new BigInt();
-
             int sub = 0 ;
-
             bool order = false;
             int i= 0;
 
@@ -71,52 +69,28 @@ class BigInt{
                     i++;
                 }
             }
-            std::cout<<"order :"<< order<<std::endl;
-
-            
             BigInt aux_o = (order==false) ? o : *this;
             BigInt aux_value = (order==true) ? o : *this;
 
-            //int next_value= 0;
             int max = std::max(aux_o.value.size(), aux_value.value.size()); 
 
             if(aux_o.value[aux_o.value.size()] >= aux_o.value[aux_o.value.size()]){
                 for(int i = 0; i<max; i++){
-                    std::cout<<" Comapração - "<<aux_value.value[aux_value.value.size()-(1+i)]<<"<="<< aux_o.value[aux_o.value.size() -(1+i)]<<std::endl;
-                    if(i> aux_o.value.size()) *aux_BigInt->value.insert(aux_BigInt->value.begin(),aux_value.value[aux_value.value.size()-(1+i)]);
+                    if(i> static_cast<int>(aux_o.value.size())) *aux_BigInt->value.insert(aux_BigInt->value.begin(),aux_value.value[aux_value.value.size()-(1+i)]);
                     else if(aux_o.value[aux_o.value.size()-(1+i)] <= aux_value.value[aux_value.value.size()-(1+i)]){
-                        std::cout<<"sub :"<<aux_value.value[aux_value.value.size()-(1+i)]<<"-"<< aux_o.value[aux_o.value.size() -(1+i)]<<std::endl;
                         sub = aux_value.value[aux_value.value.size()-(1+i)]- aux_o.value[aux_o.value.size() -(1+i)];
-                        
-                        std::cout<<"sub :"<<sub<<std::endl;
                         aux_BigInt->value.insert(aux_BigInt->value.begin(),sub);
-                        std::cout<<"Teste4"<<std::endl;
-
-                    }else{
-                        std::cout<<"Teste9"<<std::endl;
-                        if((i+1)<max){
-                            int aux = 0;
-                            while (aux_value.value[aux_value.value.size()-(2+i+aux)]==0) aux++;
-
-                            aux_value.value[aux_value.value.size()-(2+i+aux)] -= 1;
-                            std::cout<<"Dezena :"<<aux_value.value[aux_value.value.size()-(2+i+aux)]<<std::endl;
-
-                            std::cout<<"Aux :"<<aux<<std::endl;
-
-                            if(aux == 0) {aux_value.value[aux_value.value.size()-(1+i)] += 10;}
-                            std::cout<<"Teste2"<<std::endl;
-
-                            while (aux!=0){
-                                aux_value.value[aux_value.value.size()-(1+i+aux)] += 9 ;aux--;
-                                if(aux == 0) aux_value.value[aux_value.value.size()-(1+i)] += 10;
-                            }
-                            std::cout<<"Teste3"<<std::endl;
-
-                            //std::cout<<aux_value.value[aux_value.value.size()-(1+i)]<<std::endl;
-                            sub = aux_value.value[aux_value.value.size()-(1+i)]- aux_o.value[aux_o.value.size() -(1+i)];
-                            //std::cout<<"sub :"<<sub<<std::endl;
-                            aux_BigInt->value.insert(aux_BigInt->value.begin(),sub);
+                    }else if((i+1)<max){
+                        int aux = 0;
+                        while (aux_value.value[aux_value.value.size()-(2+i+aux)]==0) aux++;
+                        aux_value.value[aux_value.value.size()-(2+i+aux)] -= 1;
+                        if(aux == 0) {aux_value.value[aux_value.value.size()-(1+i)] += 10;}
+                        while (aux!=0){
+                            aux_value.value[aux_value.value.size()-(1+i+aux)] += 9 ;aux--;
+                            if(aux == 0) aux_value.value[aux_value.value.size()-(1+i)] += 10;
                         }
+                        sub = aux_value.value[aux_value.value.size()-(1+i)]- aux_o.value[aux_o.value.size() -(1+i)];
+                        aux_BigInt->value.insert(aux_BigInt->value.begin(),sub);
                     }
                 }
             }
