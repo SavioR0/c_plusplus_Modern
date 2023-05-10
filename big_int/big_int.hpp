@@ -19,11 +19,22 @@ class BigInt{
         void setSignal(bool signal);
 
         BigInt operator=(const BigInt& o){
-            if(this != &o){}
+            if(this != &o){
+                this->value = o.value;
+                this->signal = o.signal;
+            }
             return *this;
         }
 
+        bool operator<(const BigInt& o);
+        bool operator>(const BigInt& o);
+        bool operator!=(const BigInt& o);
+        bool operator==(const BigInt& o);
+
+        
+
         BigInt operator+(const BigInt& o){
+            if(this->signal != o.signal) return *this - o;
             BigInt* aux_BigInt = new BigInt();
             int sum = 0 ;
 
@@ -32,7 +43,6 @@ class BigInt{
             int min = std::min(o.value.size(), this->value.size());
 
             for(int i = 0; i<max; i++){
-                std::cout<<"\ni: "<<i<<std::endl;
                 sum = 0;
                 (i< min)?
                     sum = o.value[o.value.size() -(1+i)] + this->value[this->value.size()-(1+i)] :
@@ -55,53 +65,64 @@ class BigInt{
         BigInt operator-(const BigInt& o){
             BigInt* aux_BigInt = new BigInt();
             int sub = 0 ;
-            bool order = false;
-            int i= 0;
+            
+            if(*this < o) aux_BigInt->setSignal(false);
+            
+            BigInt aux_min = (*this < o) ? *this : o;
+            BigInt aux_max = (*this < o) ? o:*this;
 
-            if(this->value.size() < o.value.size()){ order = true; aux_BigInt->setSignal(false);
-            }else if (this->value.size() == o.value.size()){
-                while (i != static_cast<int>(this->value.size()) || i != static_cast<int>(o.value.size())){
-                    if(this->value[i] > o.value[i]){
-                        order = true;
-                        aux_BigInt->setSignal(false);
-                        break;
-                    }
-                    i++;
-                }
-            }
-            BigInt aux_o = (order==false) ? o : *this;
-            BigInt aux_value = (order==true) ? o : *this;
+            if(aux_min == aux_max) return BigInt("0");
 
-            int max = std::max(aux_o.value.size(), aux_value.value.size()); 
-
-            if(aux_o.value[aux_o.value.size()] >= aux_o.value[aux_o.value.size()]){
-                for(int i = 0; i<max; i++){
-                    if(i> static_cast<int>(aux_o.value.size())) *aux_BigInt->value.insert(aux_BigInt->value.begin(),aux_value.value[aux_value.value.size()-(1+i)]);
-                    else if(aux_o.value[aux_o.value.size()-(1+i)] <= aux_value.value[aux_value.value.size()-(1+i)]){
-                        sub = aux_value.value[aux_value.value.size()-(1+i)]- aux_o.value[aux_o.value.size() -(1+i)];
+            if(aux_min.value[aux_min.value.size()] >= aux_min.value[aux_min.value.size()]){
+                for(int i = 0; i< static_cast<int>(aux_max.value.size()); i++){
+                    if(i> static_cast<int>(aux_min.value.size())) *aux_BigInt->value.insert(aux_BigInt->value.begin(),aux_max.value[aux_max.value.size()-(1+i)]);
+                    else if(aux_min.value[aux_min.value.size()-(1+i)] <= aux_max.value[aux_max.value.size()-(1+i)]){
+                        sub = aux_max.value[aux_max.value.size()-(1+i)]- aux_min.value[aux_min.value.size() -(1+i)];
                         aux_BigInt->value.insert(aux_BigInt->value.begin(),sub);
-                    }else if((i+1)<max){
+                    }else if((i+1)< static_cast<int>(aux_max.value.size())){
                         int aux = 0;
-                        while (aux_value.value[aux_value.value.size()-(2+i+aux)]==0) aux++;
-                        aux_value.value[aux_value.value.size()-(2+i+aux)] -= 1;
-                        if(aux == 0) {aux_value.value[aux_value.value.size()-(1+i)] += 10;}
+                        while (aux_max.value[aux_max.value.size()-(2+i+aux)]==0) aux++;
+                        aux_max.value[aux_max.value.size()-(2+i+aux)] -= 1;
+                        if(aux == 0) {aux_max.value[aux_max.value.size()-(1+i)] += 10;}
                         while (aux!=0){
-                            aux_value.value[aux_value.value.size()-(1+i+aux)] += 9 ;aux--;
-                            if(aux == 0) aux_value.value[aux_value.value.size()-(1+i)] += 10;
+                            aux_max.value[aux_max.value.size()-(1+i+aux)] += 9 ;aux--;
+                            if(aux == 0) aux_max.value[aux_max.value.size()-(1+i)] += 10;
                         }
-                        sub = aux_value.value[aux_value.value.size()-(1+i)]- aux_o.value[aux_o.value.size() -(1+i)];
+                        sub = aux_max.value[aux_max.value.size()-(1+i)]- aux_min.value[aux_min.value.size() -(1+i)];
                         aux_BigInt->value.insert(aux_BigInt->value.begin(),sub);
                     }
                 }
             }
             if (!(aux_BigInt->value.empty())) while(aux_BigInt->value[0] == 0) aux_BigInt->value.erase(aux_BigInt->value.begin());
-            
             return *aux_BigInt; 
         }
 
-        //BigInt operator*(const BigInt& o){}
+        BigInt operator*(const BigInt& o){
+            BigInt aux_max = (*this < o) ? o:*this;
+            BigInt aux_min = (*this < o) ? *this : o;
+            if(aux_max == BigInt("0") || aux_min ==  BigInt("0")) return BigInt("0");
+            BigInt* aux_result = new BigInt();
+            if(aux_min.value[0]>0)*aux_result = *aux_result + aux_max;
+            while(aux_min != BigInt("1")){
+                *aux_result = *aux_result + aux_max;
+                aux_min = aux_min - BigInt("1");
+            }
+            return *aux_result;
+        }
 
-        //BigInt operator/(const BigInt& o){}
+        BigInt operator/(const BigInt& o){
+            BigInt* aux_result = new BigInt();
+            BigInt aux_min =  o;
+            if(*this < aux_min) return BigInt("0");
+            BigInt aux_max = *this;
+            BigInt aux_sub = aux_max;
+            *aux_result->value.insert(aux_result->value.begin(), 1);
+            while(aux_sub > o){
+                aux_sub = aux_sub - o;
+                *aux_result = *aux_result + BigInt("1");
+            }
+            return *aux_result;
+        }
 
         void printValue();
 
